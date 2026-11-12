@@ -236,14 +236,14 @@ inline sign-in, cart, orders, admin — at 360 px and desktop widths.)*
 
 ## 9. Deployment & Operations
 
-Deployed to a **Render Web Service on the Free compute plan** via
-`render.yaml` (build `npm install`, start `npm start`, `NODE_ENV=production`,
-generated `SESSION_SECRET`, `healthCheckPath: /api/health`). The schema and
-seed run idempotently on every boot and regenerate the catalogue, demo accounts
-and placeholder digital files. The free plan has an ephemeral filesystem and
-spins down after ~15 minutes of no traffic, so data resets on redeploy or
-spin-down; upgrading to `plan: starter` with a 1 GB disk at `/var/data` enables
-true persistence (and the +5 deployment bonus).
+Deployed on **Railway** at
+`https://booknest-production-f8016fa7.up.railway.app`. Railway auto-detects
+Node from `package.json` (build `npm install`, start `npm start`) and injects
+`PORT`. The free plan gives a $5 / 30-day trial (no credit card), then $1/month
+of credit. The schema and seed run idempotently on every boot and regenerate
+the catalogue, demo accounts and placeholder digital files; the SQLite database
+lives on the container filesystem, so a Railway volume is the persistence
+upgrade.
 
 ## 10. Limitations & Future Work
 

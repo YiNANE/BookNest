@@ -75,38 +75,16 @@ npm test
 
 ## Deployment
 
-Deployed as a **Render Web Service on the Free compute plan** (the live public
-URL earns the deployment bonus; Free instances need no payment method).
+Deployed on **Railway**:
+**https://booknest-production-f8016fa7.up.railway.app** (the live public URL
+earns the deployment bonus).
 
-Two options:
-
-- **Blueprint**: push this repo and pick it in Render — `render.yaml` creates
-  the service with `runtime: node`, `npm install` / `npm start`, a generated
-  `SESSION_SECRET` and `healthCheckPath: /api/health`.
-- **Manual**: New → Web Service → Language **Node** → Build Command
-  `npm install` → Start Command `npm start` → compute plan **Free**. Add
-  `NODE_ENV=production` and a random `SESSION_SECRET`; leave `PORT` unset
-  (Render injects it). Do not add a disk on the free plan.
-
-Public URL: **https://booknest.onrender.com** (fill in the real one after the
-first deploy).
-
-> Free-plan trade-offs, documented in the report as known limitations:
-> the service **spins down after 15 minutes without traffic** (first request
-> after that takes ~1 minute to cold start), and its filesystem is
-> **ephemeral** — `data/booknest.db`, `uploads/` and `files/` are rebuilt on
-> every restart or redeploy. The schema and seed are idempotent and run on every
-> boot, so the catalogue, the three demo accounts and the placeholder digital
-> files always come back; only user-generated posts and orders are lost when the
-> instance restarts.
->
-> Keeping one free service continuously warm (e.g. a 5-minute uptime ping) costs
-> roughly 730 of the 750 free instance hours per month and avoids most
-> spin-down data resets, which is useful for the Week 14–15 demo.
->
-> True persistence needs `plan: starter` plus a 1 GB disk at `/var/data`; the
-> commented block in `render.yaml` has that variant ready if a paid plan becomes
-> available.
+- Railway auto-detects Node from `package.json` (`npm install` + `npm start`)
+  and injects `PORT`; no extra config file is required.
+- Free plan: a **$5 / 30-day trial** (no credit card), then $1/month of credit.
+- The SQLite database sits on the container filesystem and is rebuilt
+  idempotently by the seed on every boot; attach a Railway volume to persist
+  user posts and orders across redeploys.
 
 ## Known limitations
 
