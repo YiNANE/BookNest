@@ -54,6 +54,9 @@ export async function seedDatabase(db) {
      VALUES (@email, @hash, @displayName, @role)`
   );
   for (const u of DEMO_USERS) {
+    // Skip the CPU-heavy bcrypt hash when the account already exists — it only
+    // needs to be computed once, not on every cold start.
+    if (db.prepare('SELECT 1 FROM user WHERE email = ?').get(u.email)) continue;
     const hash = await bcrypt.hash(u.password, 10);
     upsertUser.run({ email: u.email, hash, displayName: u.displayName, role: u.role });
   }
