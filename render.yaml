@@ -1,25 +1,26 @@
-# Render Blueprint for BookNest.
-# Persistent disk keeps the SQLite database, uploaded covers and digital files
-# across restarts and redeploys. Seed runs idempotently on first boot.
+# Render Blueprint for BookNest — FREE compute plan (no payment method, no disk).
+#
+# The free plan has an ephemeral filesystem and cannot attach a disk, so
+# data/booknest.db, uploads/ and files/ are rebuilt on every restart, redeploy
+# or spin-down. That is fine here: the schema and seed are idempotent and run on
+# every boot, so the catalogue, the three demo accounts and the placeholder
+# digital files always come back. See README.md → Deployment for the trade-offs.
+#
+# For real persistence, switch plan to starter (0.5c-512mb) and attach a 1 GB
+# disk at /var/data with DB_PATH / UPLOAD_DIR / FILES_DIR pointing into it.
 services:
   - type: web
     name: booknest
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
       - key: SESSION_SECRET
         generateValue: true
-      - key: DB_PATH
-        value: /var/data/booknest.db
-      - key: UPLOAD_DIR
-        value: /var/data/uploads
-      - key: FILES_DIR
-        value: /var/data/files
-    disk:
-      name: booknest-data
-      mountPath: /var/data
-      sizeGB: 1
+      # PORT is injected by Render — do not set it.
+      # No DB_PATH / UPLOAD_DIR / FILES_DIR on the free plan: the app defaults
+      # (./data, ./uploads, ./files) keep everything on the same filesystem.

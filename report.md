@@ -236,10 +236,14 @@ inline sign-in, cart, orders, admin — at 360 px and desktop widths.)*
 
 ## 9. Deployment & Operations
 
-Deploy to a **Render Web Service with a 1 GB persistent disk** (`render.yaml` is
-provided). Environment: `DB_PATH`, `UPLOAD_DIR`, `FILES_DIR` point at the disk;
-`SESSION_SECRET` is generated. The schema and seed run idempotently on first
-boot. Digital files are generated on first boot into `FILES_DIR`.
+Deployed to a **Render Web Service on the Free compute plan** via
+`render.yaml` (build `npm install`, start `npm start`, `NODE_ENV=production`,
+generated `SESSION_SECRET`, `healthCheckPath: /api/health`). The schema and
+seed run idempotently on every boot and regenerate the catalogue, demo accounts
+and placeholder digital files. The free plan has an ephemeral filesystem and
+spins down after ~15 minutes of no traffic, so data resets on redeploy or
+spin-down; upgrading to `plan: starter` with a 1 GB disk at `/var/data` enables
+true persistence (and the +5 deployment bonus).
 
 ## 10. Limitations & Future Work
 

@@ -75,22 +75,38 @@ npm test
 
 ## Deployment
 
-Deploy as a **Render Web Service with a 1 GB persistent disk** (the disk earns
-the +5 deployment bonus). Two options:
+Deployed as a **Render Web Service on the Free compute plan** (the live public
+URL earns the deployment bonus; Free instances need no payment method).
 
-- **Blueprint**: push this repo and select it in Render — `render.yaml`
-  configures the service, env vars and disk.
-- **Manual**: create a Web Service, set the environment variables from
-  `.env.example` (`DB_PATH=/var/data/booknest.db`, `UPLOAD_DIR=/var/data/uploads`,
-  `FILES_DIR=/var/data/files`, a generated `SESSION_SECRET`), and attach a 1 GB
-  disk mounted at `/var/data`.
+Two options:
 
-The schema and seed run automatically and idempotently on first boot, so no
-manual database setup is needed. Public URL: **TBD — fill in after deploying.**
+- **Blueprint**: push this repo and pick it in Render — `render.yaml` creates
+  the service with `runtime: node`, `npm install` / `npm start`, a generated
+  `SESSION_SECRET` and `healthCheckPath: /api/health`.
+- **Manual**: New → Web Service → Language **Node** → Build Command
+  `npm install` → Start Command `npm start` → compute plan **Free**. Add
+  `NODE_ENV=production` and a random `SESSION_SECRET`; leave `PORT` unset
+  (Render injects it). Do not add a disk on the free plan.
 
-> Note: persistent disks require a paid Render plan; on the free tier the app
-> still runs but data resets on each deploy. Record the live URL here and in
-> the report before submission.
+Public URL: **https://booknest.onrender.com** (fill in the real one after the
+first deploy).
+
+> Free-plan trade-offs, documented in the report as known limitations:
+> the service **spins down after 15 minutes without traffic** (first request
+> after that takes ~1 minute to cold start), and its filesystem is
+> **ephemeral** — `data/booknest.db`, `uploads/` and `files/` are rebuilt on
+> every restart or redeploy. The schema and seed are idempotent and run on every
+> boot, so the catalogue, the three demo accounts and the placeholder digital
+> files always come back; only user-generated posts and orders are lost when the
+> instance restarts.
+>
+> Keeping one free service continuously warm (e.g. a 5-minute uptime ping) costs
+> roughly 730 of the 750 free instance hours per month and avoids most
+> spin-down data resets, which is useful for the Week 14–15 demo.
+>
+> True persistence needs `plan: starter` plus a 1 GB disk at `/var/data`; the
+> commented block in `render.yaml` has that variant ready if a paid plan becomes
+> available.
 
 ## Known limitations
 
