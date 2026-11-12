@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/catalogue.html">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main class="book-page">
+  <a class="back-link" href="/catalogue.html">&larr; Back to catalogue</a>
+
+  <div class="book-layout">
+    <div id="book-cover" class="book-cover-lg"></div>
+    <div class="book-info">
+      <p class="muted"><span id="book-category"></span></p>
+      <h1 id="book-title">Loading…</h1>
+      <p id="book-author" class="book-author-lg"></p>
+      <div id="book-rating" class="book-rating-lg"></div>
+      <p class="price-lg" id="book-price"></p>
+      <div id="book-badges" class="badges"></div>
+      <p id="book-description" class="book-desc"></p>
+      <div id="book-action"></div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Recommendations <span class="pill">the reason matters</span></h2>
+    </div>
+    <div id="recommendations" class="rec-list" aria-live="polite"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Reviews</h2></div>
+    <div id="reviews" class="review-list" aria-live="polite"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/book.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Render Blueprint for BookNest.
+# Persistent disk keeps the SQLite database, uploaded covers and digital files
+# across restarts and redeploys. Seed runs idempotently on first boot.
+services:
+  - type: web
+    name: booknest
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /var/data/booknest.db
+      - key: UPLOAD_DIR
+        value: /var/data/uploads
+      - key: FILES_DIR
+        value: /var/data/files
+    disk:
+      name: booknest-data
+      mountPath: /var/data
+      sizeGB: 1

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BookNest — A Campus Bookstore Built on Reasoned Recommendations</title>
+<meta name="description" content="BookNest: a university bookstore where the unit of trust is a peer's written reason, not a star rating.">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/" aria-current="page">Home</a>
+      <a href="/catalogue.html">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="hero-kicker">A campus bookstore for reasoned recommendations</p>
+    <h1>Buy books your peers <em>actually</em> vouch for.</h1>
+    <p class="hero-sub">BookNest puts the <em>reason</em> behind every recommendation first — not an anonymous star rating. Browse freely, no login required.</p>
+    <a class="btn btn-primary" href="/catalogue.html">Browse the catalogue</a>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Today's picks</h2>
+      <a class="section-link" href="/catalogue.html?sort=rating">See all &rarr;</a>
+    </div>
+    <div id="picks-grid" class="book-grid" aria-live="polite"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>Browse by subject</h2></div>
+    <div id="category-grid" class="category-grid" aria-live="polite"></div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>

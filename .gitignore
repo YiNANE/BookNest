@@ -1,0 +1,18 @@
+# dependencies
+node_modules/
+
+# secrets & env
+.env
+
+# runtime data (SQLite db + uploads)
+data/
+uploads/
+files/
+
+# logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

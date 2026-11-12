@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/catalogue.html">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap admin">
+  <h1>Admin</h1>
+  <div id="admin-root">
+
+    <div class="admin-tabs">
+      <button type="button" data-tab="books" class="active">Books</button>
+      <button type="button" data-tab="orders">Orders</button>
+    </div>
+
+    <section id="books-panel">
+      <h2>Add / edit book</h2>
+      <form id="book-form" class="admin-form" enctype="multipart/form-data">
+        <input type="hidden" name="id">
+        <label>Title <input name="title" required maxlength="200"></label>
+        <label>Author <input name="author" required maxlength="200"></label>
+        <label>Category
+          <select name="category_id" id="book-category" required></select>
+        </label>
+        <label>Format
+          <select name="format" id="book-format">
+            <option value="digital">Digital</option>
+            <option value="used">Used copy</option>
+          </select>
+        </label>
+        <label>Price (HK$)
+          <input name="price" type="number" min="0" step="0.01" required>
+        </label>
+        <label>Condition (used only)
+          <select name="condition" id="book-condition">
+            <option value="">—</option>
+            <option value="like-new">Like new</option>
+            <option value="good">Good</option>
+            <option value="acceptable">Acceptable</option>
+          </select>
+        </label>
+        <label>Stock (used only)
+          <input name="stock" type="number" min="0" step="1" value="0">
+        </label>
+        <label>Active
+          <select name="is_active">
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+        </label>
+        <label class="full">Description
+          <textarea name="description" rows="3" maxlength="2000"></textarea>
+        </label>
+        <label class="full">Cover image (JPEG / PNG / WebP, ≤ 2 MB — optional)
+          <input type="file" name="cover" accept="image/jpeg,image/png,image/webp">
+        </label>
+        <div class="form-actions full">
+          <button type="submit" class="btn btn-primary" id="book-submit">Add book</button>
+          <button type="button" class="linklike" id="book-reset">Reset</button>
+        </div>
+        <p id="book-form-error" class="auth-error full" role="alert"></p>
+      </form>
+
+      <h2>Catalogue</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Title</th><th>Format</th><th>Price</th><th>Stock</th>
+              <th>Category</th><th>Active</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="books-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="orders-panel" hidden>
+      <h2>Orders</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>User</th><th>Total</th><th>Status</th>
+              <th>Address</th><th>Created</th><th>Set status</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/admin.js"></script>
+</body>
+</html>

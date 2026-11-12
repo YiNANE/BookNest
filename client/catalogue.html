@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browse — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/catalogue.html" aria-current="page">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main class="catalogue-layout">
+  <aside class="filters" aria-label="Filters">
+    <h2>Filters</h2>
+
+    <fieldset>
+      <legend>Subject</legend>
+      <div id="category-filter" class="filter-group"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Format</legend>
+      <div class="filter-group">
+        <label class="filter-row"><input type="radio" name="format" value="" checked><span>All</span></label>
+        <label class="filter-row"><input type="radio" name="format" value="digital"><span>Digital</span></label>
+        <label class="filter-row"><input type="radio" name="format" value="used"><span>Used copy</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Price (HK$)</legend>
+      <div class="price-inputs">
+        <input type="number" id="min-price" placeholder="Min" min="0" aria-label="Minimum price">
+        <span aria-hidden="true">–</span>
+        <input type="number" id="max-price" placeholder="Max" min="0" aria-label="Maximum price">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Minimum rating</legend>
+      <select id="min-rating" aria-label="Minimum rating">
+        <option value="">Any</option>
+        <option value="4">4 stars &amp; up</option>
+        <option value="3">3 stars &amp; up</option>
+        <option value="2">2 stars &amp; up</option>
+        <option value="1">1 star &amp; up</option>
+      </select>
+    </fieldset>
+
+    <button class="btn btn-ghost" id="clear-filters" type="button">Clear filters</button>
+  </aside>
+
+  <section class="results">
+    <div class="results-toolbar">
+      <p id="result-count" class="muted" aria-live="polite"></p>
+      <label class="sort-control">Sort
+        <select id="sort">
+          <option value="newest">Newest</option>
+          <option value="rating">Highest rated</option>
+          <option value="price">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </select>
+      </label>
+    </div>
+    <div id="book-grid" class="book-grid" aria-live="polite"></div>
+    <nav id="pagination" class="pagination" aria-label="Pagination"></nav>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/catalogue.js"></script>
+</body>
+</html>
