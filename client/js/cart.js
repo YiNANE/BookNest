@@ -1,5 +1,6 @@
 import { api } from './api.js';
-import { cover, escapeHtml, formatLabel, initHeader, money, refreshHeader, toast } from './ui.js';
+import { cover, emptyState, escapeHtml, formatLabel, guardSubmit, initHeader, money, refreshHeader, toast } from './ui.js';
+import { t } from './i18n.js';
 import { ensureAuthed } from './auth.js';
 
 async function init() {
@@ -17,25 +18,26 @@ async function load() {
 function render(items, subtotal) {
   const el = document.getElementById('cart-container');
   if (!items.length) {
-    el.innerHTML = `<p class="empty">Your cart is empty.</p>
-      <p><a class="btn btn-primary" href="/catalogue.html">Browse books</a></p>`;
+    el.innerHTML = emptyState(t('empty.cart'), {
+      cta: { href: '/catalogue.html', label: t('btn.browse') },
+    });
     return;
   }
   const hasUsed = items.some((i) => i.format === 'used');
   el.innerHTML = `
     <div class="cart-list">${items.map(itemRow).join('')}</div>
     <div class="cart-summary">
-      <p class="cart-subtotal">Subtotal: <strong>${money(subtotal)}</strong></p>
+      <p class="cart-subtotal">${t('cart.subtotal')}: <strong>${money(subtotal)}</strong></p>
       <form id="checkout-form" novalidate>
         <div id="address-field" ${hasUsed ? '' : 'hidden'}>
-          <label>Delivery address (required for used books)
+          <label>${t('cart.delivery')}
             <textarea name="deliveryAddress" rows="3" minlength="5"
-              placeholder="Room, building, campus…"></textarea>
+              placeholder="${t('cart.deliveryPh')}"></textarea>
           </label>
         </div>
-        <button type="submit" class="btn btn-primary">Place order (simulated)</button>
+        <button type="submit" class="btn btn-primary">${t('cart.placeOrder')}</button>
       </form>
-      <p class="muted small">No real payment or card details are used.</p>
+      <p class="muted small">${t('cart.paymentNote')}</p>
     </div>`;
 
   el.querySelector('.cart-list').addEventListener('change', onQtyChange);
@@ -50,13 +52,13 @@ function itemRow(it) {
       <div class="cart-info">
         <a class="cart-title" href="/book.html?id=${it.id}">${escapeHtml(it.title)}</a>
         <p class="muted">${escapeHtml(it.author)} · ${formatLabel(it.format)}</p>
-        <p class="cart-unit">${money(it.price)} each</p>
+        <p class="cart-unit">${money(it.price)} ${t('cart.each')}</p>
       </div>
       <div class="cart-controls">
         <input type="number" class="qty-input" value="${it.qty}" min="1" max="99"
           aria-label="Quantity for ${escapeHtml(it.title)}">
         <span class="cart-line-total">${money(it.price * it.qty)}</span>
-        <button class="linklike danger" type="button" data-action="remove">Remove</button>
+        <button class="linklike danger" type="button" data-action="remove">${t('cart.remove')}</button>
       </div>
     </article>`;
 }
@@ -84,7 +86,7 @@ async function onRemove(e) {
   const id = Number(btn.closest('.cart-item').dataset.id);
   try {
     await api(`/api/cart/${id}`, { method: 'DELETE' });
-    toast('Removed from cart.');
+    toast(t('cart.removed'));
     await load();
   } catch (err) {
     toast(err.message);
@@ -94,15 +96,18 @@ async function onRemove(e) {
 async function onCheckout(e) {
   e.preventDefault();
   const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
   const deliveryAddress = form.deliveryAddress ? form.deliveryAddress.value : '';
-  try {
-    const { order } = await api('/api/orders', { method: 'POST', body: { deliveryAddress } });
-    toast(`Order #${order.id} placed.`);
-    await refreshHeader();
-    setTimeout(() => { window.location.href = '/orders.html'; }, 700);
-  } catch (err) {
-    toast(err.message);
-  }
+  await guardSubmit(submitBtn, async () => {
+    try {
+      const { order } = await api('/api/orders', { method: 'POST', body: { deliveryAddress } });
+      toast(`Order #${order.id} placed.`);
+      await refreshHeader();
+      setTimeout(() => { window.location.href = '/orders.html'; }, 700);
+    } catch (err) {
+      toast(err.message);
+    }
+  });
 }
 
 init();

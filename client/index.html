@@ -26,30 +26,37 @@
   </div>
 </header>
 
+<aside id="subject-rail" class="subject-rail" aria-label="Subjects"></aside>
+
 <main>
   <section class="hero">
-    <p class="hero-kicker">A campus bookstore for reasoned recommendations</p>
-    <h1>Buy books your peers <em>actually</em> vouch for.</h1>
-    <p class="hero-sub">BookNest puts the <em>reason</em> behind every recommendation first — not an anonymous star rating. Browse freely, no login required.</p>
-    <a class="btn btn-primary" href="/catalogue.html">Browse the catalogue</a>
+    <p class="hero-kicker" data-i18n="home.kicker">A campus bookstore for reasoned recommendations</p>
+    <h1 data-i18n-html="home.title">Buy books your peers <em>actually</em> vouch for.</h1>
+    <p class="hero-sub" data-i18n-html="home.sub">BookNest puts the <em>reason</em> behind every recommendation first — not an anonymous star rating. Browse freely, no login required.</p>
+    <a class="btn btn-primary" href="/catalogue.html" data-i18n="home.cta">Browse the catalogue</a>
   </section>
 
   <section class="section">
-    <div class="section-head">
-      <h2>Today's picks</h2>
-      <a class="section-link" href="/catalogue.html?sort=rating">See all &rarr;</a>
+    <div class="picks-stage">
+      <div class="confetti" id="confetti" aria-hidden="true"></div>
+      <div class="picks-head">
+        <h2 data-i18n="home.picks">Today's picks</h2>
+        <a class="section-link" href="/catalogue.html?sort=rating" data-i18n="home.seeAll">See all &rarr;</a>
+      </div>
+      <div id="picks-grid" class="book-grid" aria-live="polite"></div>
     </div>
-    <div id="picks-grid" class="book-grid" aria-live="polite"></div>
   </section>
 
   <section class="section">
-    <div class="section-head"><h2>Browse by subject</h2></div>
+    <div class="section-head"><h2 data-i18n="home.subjects">Browse by subject</h2></div>
     <div id="category-grid" class="category-grid" aria-live="polite"></div>
   </section>
+
+  <div id="category-sections" aria-live="polite"></div>
 </main>
 
 <footer class="site-footer">
-  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+  <p data-i18n="footer.text">BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
 </footer>
 
 <script type="module" src="/js/home.js"></script>

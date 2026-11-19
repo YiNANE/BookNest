@@ -10,6 +10,7 @@ import contentRouter from './routes/content.js';
 import cartRouter from './routes/cart.js';
 import downloadRouter from './routes/download.js';
 import adminRouter from './routes/admin.js';
+import settingsRouter from './routes/settings.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -49,6 +50,7 @@ export async function createApp(db) {
   app.use('/api', contentRouter);
   app.use('/api', cartRouter);
   app.use('/api', downloadRouter);
+  app.use('/api', settingsRouter);
   app.use('/api/admin', adminRouter);
 
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));

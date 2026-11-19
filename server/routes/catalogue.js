@@ -81,15 +81,31 @@ router.get('/catalogue/meta', (req, res) => {
 });
 
 router.get('/home', (req, res) => {
-  const picks = db(req).prepare(`
+  const d = db(req);
+  const picks = d.prepare(`
     SELECT ${LIST_SELECT}
     ${BASE}
     WHERE b.is_active = 1
     GROUP BY b.id
     ORDER BY avg_rating DESC, recommendation_count DESC, b.created_at DESC
-    LIMIT 8
+    LIMIT 4
   `).all();
-  res.json({ picks });
+  const pickForCategory = d.prepare(`
+    SELECT ${LIST_SELECT}
+    ${BASE}
+    WHERE b.is_active = 1 AND c.slug = ?
+    GROUP BY b.id
+    ORDER BY avg_rating DESC, recommendation_count DESC, b.created_at DESC
+    LIMIT 4
+  `);
+  const categorySections = d
+    .prepare('SELECT id, name, slug FROM category ORDER BY name')
+    .all()
+    .map((cat) => ({
+      category: { id: cat.id, name: cat.name, slug: cat.slug },
+      books: pickForCategory.all(cat.slug),
+    }));
+  res.json({ picks, categorySections });
 });
 
 router.get('/books', (req, res) => {

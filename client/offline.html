@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connection lost — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main class="page-wrap" style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+  <div class="offline-card">
+    <svg viewBox="0 0 240 200" width="210" height="175" class="bird-slumped" role="img"
+         aria-label="The BookNest bird slumped on the ground, exhausted">
+      <defs>
+        <radialGradient id="bnBird2" cx="45%" cy="38%" r="72%">
+          <stop offset="0%" stop-color="#FF62A6"/>
+          <stop offset="100%" stop-color="#D6006E"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="120" cy="184" rx="76" ry="12" fill="#000" opacity="0.12"/>
+      <path d="M68 176 C52 142 68 110 104 108 C142 106 168 126 172 152 C175 168 160 177 140 179 L95 179 C82 179 71 179 68 176 Z"
+            fill="url(#bnBird2)"/>
+      <circle cx="94" cy="120" r="31" fill="url(#bnBird2)"/>
+      <path d="M67 128 L48 137 L69 143 Z" fill="#F5A623"/>
+      <path d="M80 118 q11 6 21 0" stroke="#3A0A22" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M127 96 q-6 12 0 18 q6 -6 0 -18 Z" fill="#7CC7FF"/>
+      <g fill="#F5A623">
+        <path d="M150 78 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1 Z" opacity=".95"/>
+        <path d="M182 100 l2 5 5 1 -4 4 1 5 -4 -2 -4 2 1 -5 -4 -4 5 -1 Z" opacity=".7"/>
+        <path d="M118 68 l2 5 5 1 -4 4 1 5 -4 -2 -4 2 1 -5 -4 -4 5 -1 Z" opacity=".6"/>
+      </g>
+      <ellipse cx="100" cy="181" rx="10" ry="4" fill="#F5A623"/>
+      <ellipse cx="132" cy="181" rx="10" ry="4" fill="#F5A623"/>
+      <text x="150" y="60" font-size="20" fill="#FF8FC0" font-weight="700">z</text>
+      <text x="169" y="47" font-size="14" fill="#FF8FC0" font-weight="700">z</text>
+    </svg>
+    <h2>网络开小差了</h2>
+    <p>你好像断网了，或者服务器暂时没响应。小鸟也累瘫了……</p>
+    <a class="btn btn-primary" href="/">返回首页</a>
+  </div>
+</main>
+</body>
+</html>

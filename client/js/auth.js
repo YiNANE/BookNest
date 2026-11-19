@@ -1,4 +1,5 @@
 import { api } from './api.js';
+import { t } from './i18n.js';
 
 let currentUser = null;
 
@@ -51,14 +52,34 @@ function openAuthDialog() {
     function setMode(mode) {
       form.dataset.mode = mode;
       const registering = mode === 'register';
-      title.textContent = registering ? 'Create account' : 'Sign in';
-      submit.textContent = registering ? 'Create account' : 'Sign in';
+      title.textContent = registering ? t('auth.title.register') : t('auth.title.signin');
+      submit.textContent = registering ? t('auth.submit.register') : t('auth.submit.signin');
       displayField.hidden = !registering;
-      tabs.forEach((t) => t.classList.toggle('active', t.dataset.tab === mode));
+      tabs.forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === mode));
       errorEl.textContent = '';
     }
 
     tabs.forEach((t) => t.addEventListener('click', () => setMode(t.dataset.tab)));
+
+    // Close (fixes the "stuck on sign-in" case).
+    dialog.querySelector('#auth-close').addEventListener('click', () => dialog.close('cancel'));
+
+    // Clicking the dark backdrop also closes the dialog.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close('cancel');
+    });
+
+    // Show / hide password.
+    const pw = form.password;
+    const pwBtn = dialog.querySelector('#pw-toggle');
+    pwBtn.addEventListener('click', () => {
+      const showing = pw.type === 'text';
+      pw.type = showing ? 'password' : 'text';
+      pwBtn.textContent = showing ? '👁' : '🙈';
+      pwBtn.setAttribute('aria-label', showing ? t('auth.showPw') : t('auth.hidePw'));
+      pwBtn.setAttribute('aria-pressed', String(!showing));
+      pw.focus();
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -101,29 +122,34 @@ function openAuthDialog() {
 function buildDialog() {
   const dialog = document.createElement('dialog');
   dialog.className = 'auth-dialog';
-  dialog.setAttribute('aria-label', 'Sign in or create an account');
+  dialog.setAttribute('aria-label', t('auth.hint'));
   dialog.innerHTML = `
     <div class="auth-dialog-inner">
+      <button type="button" class="auth-close" id="auth-close" aria-label="${t('auth.close')}">✕</button>
       <div class="auth-tabs">
-        <button type="button" data-tab="login">Sign in</button>
-        <button type="button" data-tab="register">Register</button>
+        <button type="button" data-tab="login">${t('auth.signin')}</button>
+        <button type="button" data-tab="register">${t('auth.register')}</button>
       </div>
-      <h2 id="auth-title">Sign in</h2>
-      <p class="auth-hint">Sign in to continue — your action resumes right after.</p>
+      <h2 id="auth-title">${t('auth.title.signin')}</h2>
+      <p class="auth-hint">${t('auth.hint')}</p>
       <form novalidate>
-        <label>Email
+        <label>${t('auth.email')}
           <input type="email" name="email" autocomplete="email" required>
         </label>
         <div id="display-name-field" hidden>
-          <label>Display name
+          <label>${t('auth.displayName')}
             <input type="text" name="displayName" maxlength="60" autocomplete="name">
           </label>
         </div>
-        <label>Password
-          <input type="password" name="password" autocomplete="current-password" required>
+        <label>${t('auth.password')}
+          <span class="pw-wrap">
+            <input type="password" name="password" autocomplete="current-password" required>
+            <button type="button" class="pw-toggle" id="pw-toggle"
+              aria-label="${t('auth.showPw')}" aria-pressed="false">👁</button>
+          </span>
         </label>
         <p id="auth-error" class="auth-error" role="alert"></p>
-        <button type="submit" id="auth-submit" class="btn btn-primary">Sign in</button>
+        <button type="submit" id="auth-submit" class="btn btn-primary">${t('auth.submit.signin')}</button>
       </form>
     </div>`;
   return dialog;

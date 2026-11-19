@@ -7,7 +7,15 @@ export async function api(path, options = {}) {
     headers['Content-Type'] = 'application/json';
     body = JSON.stringify(body);
   }
-  const res = await fetch(path, { ...options, headers, body });
+  let res;
+  try {
+    res = await fetch(path, { ...options, headers, body });
+  } catch (networkErr) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('bn:net-error'));
+    }
+    throw new Error('Network error — please check your connection.');
+  }
 
   if (!res.ok) {
     let message = `Request failed (${res.status})`;

@@ -27,24 +27,24 @@
 
 <main class="catalogue-layout">
   <aside class="filters" aria-label="Filters">
-    <h2>Filters</h2>
+    <h2 data-i18n="cat.filters">Filters</h2>
 
     <fieldset>
-      <legend>Subject</legend>
+      <legend data-i18n="cat.subject">Subject</legend>
       <div id="category-filter" class="filter-group"></div>
     </fieldset>
 
     <fieldset>
-      <legend>Format</legend>
+      <legend data-i18n="cat.format">Format</legend>
       <div class="filter-group">
-        <label class="filter-row"><input type="radio" name="format" value="" checked><span>All</span></label>
-        <label class="filter-row"><input type="radio" name="format" value="digital"><span>Digital</span></label>
-        <label class="filter-row"><input type="radio" name="format" value="used"><span>Used copy</span></label>
+        <label class="filter-row"><input type="radio" name="format" value="" checked><span data-i18n="cat.all">All</span></label>
+        <label class="filter-row"><input type="radio" name="format" value="digital"><span data-i18n="cat.digital">Digital</span></label>
+        <label class="filter-row"><input type="radio" name="format" value="used"><span data-i18n="cat.used">Used copy</span></label>
       </div>
     </fieldset>
 
     <fieldset>
-      <legend>Price (HK$)</legend>
+      <legend data-i18n="cat.price">Price (HK$)</legend>
       <div class="price-inputs">
         <input type="number" id="min-price" placeholder="Min" min="0" aria-label="Minimum price">
         <span aria-hidden="true">–</span>
@@ -53,28 +53,28 @@
     </fieldset>
 
     <fieldset>
-      <legend>Minimum rating</legend>
+      <legend data-i18n="cat.minRating">Minimum rating</legend>
       <select id="min-rating" aria-label="Minimum rating">
-        <option value="">Any</option>
-        <option value="4">4 stars &amp; up</option>
-        <option value="3">3 stars &amp; up</option>
-        <option value="2">2 stars &amp; up</option>
-        <option value="1">1 star &amp; up</option>
+        <option value="" data-i18n="cat.any">Any</option>
+        <option value="4">4+</option>
+        <option value="3">3+</option>
+        <option value="2">2+</option>
+        <option value="1">1+</option>
       </select>
     </fieldset>
 
-    <button class="btn btn-ghost" id="clear-filters" type="button">Clear filters</button>
+    <button class="btn btn-ghost" id="clear-filters" type="button" data-i18n="cat.clear">Clear filters</button>
   </aside>
 
   <section class="results">
     <div class="results-toolbar">
       <p id="result-count" class="muted" aria-live="polite"></p>
-      <label class="sort-control">Sort
+      <label class="sort-control"><span data-i18n="cat.sort">Sort</span>
         <select id="sort">
-          <option value="newest">Newest</option>
-          <option value="rating">Highest rated</option>
-          <option value="price">Price: low to high</option>
-          <option value="price-desc">Price: high to low</option>
+          <option value="newest" data-i18n="cat.newest">Newest</option>
+          <option value="rating" data-i18n="cat.rating">Highest rated</option>
+          <option value="price" data-i18n="cat.priceAsc">Price: low to high</option>
+          <option value="price-desc" data-i18n="cat.priceDesc">Price: high to low</option>
         </select>
       </label>
     </div>
@@ -84,7 +84,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+  <p data-i18n="footer.text">BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
 </footer>
 
 <script type="module" src="/js/catalogue.js"></script>

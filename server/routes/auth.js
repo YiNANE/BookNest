@@ -64,9 +64,9 @@ router.post('/auth/logout', (req, res) => {
 router.get('/me', (req, res) => {
   if (!req.session || !req.session.userId) return res.json({ user: null });
   const user = db(req).prepare(
-    'SELECT id, email, display_name, role FROM user WHERE id = ?'
+    'SELECT id, email, display_name, role, created_at FROM user WHERE id = ?'
   ).get(req.session.userId);
-  res.json({ user: user ? publicUser(user) : null });
+  res.json({ user: user || null });
 });
 
 export default router;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My account — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/catalogue.html">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <h1 data-i18n="account.title">My account</h1>
+  <div id="account-root" aria-live="polite">
+    <section class="account-card">
+      <h2 data-i18n="account.profile">Profile</h2>
+      <div class="profile-line"><span data-i18n="account.name">Name</span><span id="acc-name">—</span></div>
+      <div class="profile-line"><span data-i18n="account.email">Email</span><span id="acc-email">—</span></div>
+      <div class="profile-line"><span data-i18n="account.role">Role</span><span id="acc-role">—</span></div>
+      <div class="profile-line"><span data-i18n="account.since">Member since</span><span id="acc-since">—</span></div>
+    </section>
+
+    <section class="account-card">
+      <h2 data-i18n="account.activity">Activity</h2>
+      <div class="profile-line"><span data-i18n="account.ordersPlaced">Orders placed</span><span id="acc-orders">—</span></div>
+      <p><a class="btn btn-primary" href="/orders.html" data-i18n="account.viewOrders">View my orders</a></p>
+    </section>
+
+    <section class="account-card">
+      <h2 data-i18n="account.preferences">Preferences</h2>
+      <p><a class="btn btn-light" href="/settings.html" data-i18n="account.openSettings">Open settings</a></p>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer.text">BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/account.js"></script>
+</body>
+</html>

@@ -26,7 +26,7 @@
 </header>
 
 <main class="book-page">
-  <a class="back-link" href="/catalogue.html">&larr; Back to catalogue</a>
+  <a class="back-link" href="/catalogue.html" data-i18n="book.back">&larr; Back to catalogue</a>
 
   <div class="book-layout">
     <div id="book-cover" class="book-cover-lg"></div>
@@ -44,19 +44,19 @@
 
   <section class="section">
     <div class="section-head">
-      <h2>Recommendations <span class="pill">the reason matters</span></h2>
+      <h2><span data-i18n="book.recommendations">Recommendations</span> <span class="pill" data-i18n="book.reasonMatters">the reason matters</span></h2>
     </div>
     <div id="recommendations" class="rec-list" aria-live="polite"></div>
   </section>
 
   <section class="section">
-    <div class="section-head"><h2>Reviews</h2></div>
+    <div class="section-head"><h2 data-i18n="book.reviews">Reviews</h2></div>
     <div id="reviews" class="review-list" aria-live="polite"></div>
   </section>
 </main>
 
 <footer class="site-footer">
-  <p>BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+  <p data-i18n="footer.text">BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
 </footer>
 
 <script type="module" src="/js/book.js"></script>

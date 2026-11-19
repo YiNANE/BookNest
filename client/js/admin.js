@@ -1,5 +1,5 @@
 import { api } from './api.js';
-import { escapeHtml, formatDate, initHeader, money, toast } from './ui.js';
+import { escapeHtml, formatDate, guardSubmit, initHeader, money, toast } from './ui.js';
 import { ensureAuthed } from './auth.js';
 
 let categories = [];
@@ -63,23 +63,26 @@ function bindForm() {
 async function onSubmitBook(e) {
   e.preventDefault();
   const form = e.target;
+  const submitBtn = document.getElementById('book-submit');
   const id = form.id.value;
   const url = id ? `/api/admin/books/${id}` : '/api/admin/books';
   const errEl = document.getElementById('book-form-error');
   errEl.textContent = '';
-  try {
-    // multipart (FormData) — use raw fetch, not the JSON helper.
-    const res = await fetch(url, { method: id ? 'PUT' : 'POST', body: new FormData(form) });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.error || `Request failed (${res.status})`);
+  await guardSubmit(submitBtn, async () => {
+    try {
+      // multipart (FormData) — use raw fetch, not the JSON helper.
+      const res = await fetch(url, { method: id ? 'PUT' : 'POST', body: new FormData(form) });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Request failed (${res.status})`);
+      }
+      toast(id ? 'Book updated.' : 'Book added.');
+      resetForm();
+      await loadBooks();
+    } catch (err) {
+      errEl.textContent = err.message;
     }
-    toast(id ? 'Book updated.' : 'Book added.');
-    resetForm();
-    await loadBooks();
-  } catch (err) {
-    errEl.textContent = err.message;
-  }
+  });
 }
 
 function populateForm(b) {

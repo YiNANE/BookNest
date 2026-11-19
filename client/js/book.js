@@ -1,8 +1,9 @@
 import { api } from './api.js';
 import {
-  conditionLabel, cover, escapeHtml, formatDate, formatLabel, initHeader,
-  money, refreshHeader, stars, toast,
+  burst, conditionLabel, cover, emptyState, escapeHtml, flyToCart, formatDate, formatLabel,
+  guardSubmit, initHeader, money, refreshHeader, stars, toast,
 } from './ui.js';
+import { t } from './i18n.js';
 import { ensureAuthed } from './auth.js';
 
 const id = new URLSearchParams(location.search).get('id');
@@ -28,12 +29,12 @@ function renderBook(book, rating, owned) {
   document.getElementById('book-description').textContent = book.description;
   document.getElementById('book-price').textContent = money(book.price);
 
-  const badges = [formatLabel(book.format)];
+  const badges = [t(book.format === 'digital' ? 'cat.digital' : 'cat.used')];
   if (book.format === 'used') {
-    badges.push(`Condition: ${conditionLabel(book.condition)}`);
-    badges.push(`${book.stock} in stock`);
+    badges.push(`${t('book.condition')}: ${conditionLabel(book.condition)}`);
+    badges.push(`${book.stock} ${t('book.inStock')}`);
   } else {
-    badges.push('Instant download');
+    badges.push(t('book.instant'));
   }
   document.getElementById('book-badges').innerHTML =
     badges.map((b) => `<span class="badge">${escapeHtml(b)}</span>`).join('');
@@ -44,9 +45,9 @@ function renderBook(book, rating, owned) {
 
   const actionEl = document.getElementById('book-action');
   if (book.format === 'digital' && owned) {
-    actionEl.innerHTML = `<a class="btn btn-primary" href="/api/books/${book.id}/download">Download</a>`;
+    actionEl.innerHTML = `<a class="btn btn-primary" href="/api/books/${book.id}/download">${t('book.download')}</a>`;
   } else {
-    actionEl.innerHTML = `<button class="btn btn-primary" type="button" data-action="add-to-cart">Add to cart</button>`;
+    actionEl.innerHTML = `<button class="btn btn-primary" type="button" data-action="add-to-cart">${t('book.addToCart')}</button>`;
   }
 }
 
@@ -56,19 +57,16 @@ function renderRecommendations(list) {
   const el = document.getElementById('recommendations');
   el.innerHTML = `
     <form id="rec-form" class="write-form" novalidate>
-      <label>Your reason <span class="req">*</span>
+      <label>${t('book.yourReason')} <span class="req">*</span>
         <textarea name="reason" rows="2" minlength="10" maxlength="500" required
-          placeholder="Why do you recommend this book? (min 10 characters)"></textarea>
-      </label>
-      <label>More detail (optional)
-        <textarea name="body" rows="3" maxlength="2000" placeholder="What did you learn from it?"></textarea>
+          placeholder="${t('book.yourReason')}"></textarea>
       </label>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Post recommendation</button>
-        <button type="button" class="linklike" id="rec-cancel" hidden>Cancel edit</button>
+        <button type="submit" class="btn btn-primary">${t('book.postRec')}</button>
+        <button type="button" class="linklike" id="rec-cancel" hidden>${t('book.cancelEdit')}</button>
       </div>
     </form>
-    ${list.length ? list.map(recCard).join('') : '<p class="empty">No recommendations yet — be the first to explain why this book is worth it.</p>'}`;
+    ${list.length ? list.map(recCard).join('') : emptyState(t('empty.recs'))}`;
 
   el.querySelector('#rec-form').addEventListener('submit', onRecSubmit);
   el.querySelector('#rec-cancel').addEventListener('click', resetRecForm);
@@ -82,11 +80,11 @@ function recCard(rec) {
       <div class="rec-meta">
         <span class="rec-author">${escapeHtml(rec.author_name)}</span>
         <button class="vote-btn${rec.voted ? ' voted' : ''}" type="button" data-action="vote"
-          aria-pressed="${rec.voted}">👍 ${rec.useful_count} found useful</button>
+          aria-pressed="${rec.voted}">👍 ${rec.useful_count} ${t('book.foundUseful')}</button>
         <time datetime="${escapeHtml(rec.created_at)}">${formatDate(rec.created_at)}</time>
         ${rec.is_mine ? `<span class="own-actions">
-          <button class="linklike" type="button" data-action="edit-rec">Edit</button>
-          <button class="linklike danger" type="button" data-action="delete-rec">Delete</button></span>` : ''}
+          <button class="linklike" type="button" data-action="edit-rec">${t('book.edit')}</button>
+          <button class="linklike danger" type="button" data-action="delete-rec">${t('book.delete')}</button></span>` : ''}
       </div>
     </article>`;
 }
@@ -94,10 +92,12 @@ function recCard(rec) {
 function onRecSubmit(e) {
   e.preventDefault();
   const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
   const reason = form.reason.value.trim();
-  const body = form.body.value.trim();
+  const body = '';
   const editingId = form.dataset.editingId;
-  submitGuarded(async () => {
+  burst(submitBtn);
+  guardSubmit(submitBtn, () => submitGuarded(async () => {
     if (editingId) {
       await api(`/api/recommendations/${editingId}`, { method: 'PUT', body: { reason, body } });
       toast('Recommendation updated.');
@@ -105,7 +105,7 @@ function onRecSubmit(e) {
       await api(`/api/books/${id}/recommendations`, { method: 'POST', body: { reason, body } });
       toast('Recommendation posted.');
     }
-  });
+  }));
 }
 
 function onRecAction(e) {
@@ -132,9 +132,8 @@ function onRecAction(e) {
 function beginEditRec(rec) {
   const form = document.getElementById('rec-form');
   form.reason.value = rec.reason;
-  form.body.value = rec.body || '';
   form.dataset.editingId = rec.id;
-  form.querySelector('button[type=submit]').textContent = 'Save changes';
+  form.querySelector('button[type=submit]').textContent = t('book.saveChanges');
   document.getElementById('rec-cancel').hidden = false;
   form.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -143,7 +142,7 @@ function resetRecForm() {
   const form = document.getElementById('rec-form');
   form.reset();
   delete form.dataset.editingId;
-  form.querySelector('button[type=submit]').textContent = 'Post recommendation';
+  form.querySelector('button[type=submit]').textContent = t('book.postRec');
   document.getElementById('rec-cancel').hidden = true;
 }
 
@@ -153,25 +152,21 @@ function renderReviews(reviews) {
   const el = document.getElementById('reviews');
   const mine = reviews.find((r) => r.is_mine) || null;
   el.innerHTML = reviewFormHtml(mine)
-    + (reviews.length ? reviews.map(reviewCard).join('') : '<p class="empty">No scored reviews yet.</p>');
+    + (reviews.length ? reviews.map(reviewCard).join('') : emptyState(t('empty.reviews')));
 
   el.querySelector('#review-form').addEventListener('submit', onReviewSubmit);
 }
 
 function reviewFormHtml(mine) {
   const score = mine ? mine.score : 5;
-  const body = mine ? mine.body : '';
   const options = [5, 4, 3, 2, 1].map((s) =>
     `<option value="${s}" ${s === score ? 'selected' : ''}>${s} star${s === 1 ? '' : 's'}</option>`).join('');
   return `
     <form id="review-form" class="write-form" novalidate data-editing-id="${mine ? mine.id : ''}">
-      <label>Your score
+      <label>${t('book.yourScore')}
         <select name="score">${options}</select>
       </label>
-      <label>Comment (optional)
-        <textarea name="body" rows="3" maxlength="2000" placeholder="How did you find it?">${escapeHtml(body)}</textarea>
-      </label>
-      <button type="submit" class="btn btn-primary">${mine ? 'Update review' : 'Post review'}</button>
+      <button type="submit" class="btn btn-primary">${mine ? t('book.updateReview') : t('book.postReview')}</button>
     </form>`;
 }
 
@@ -183,8 +178,8 @@ function reviewCard(r) {
         <span class="review-author">${escapeHtml(r.author_name)}</span>
         <time datetime="${escapeHtml(r.created_at)}">${formatDate(r.created_at)}</time>
         ${r.is_mine ? `<span class="own-actions">
-          <button class="linklike" type="button" data-action="edit-review">Edit</button>
-          <button class="linklike danger" type="button" data-action="delete-review">Delete</button></span>` : ''}
+          <button class="linklike" type="button" data-action="edit-review">${t('book.edit')}</button>
+          <button class="linklike danger" type="button" data-action="delete-review">${t('book.delete')}</button></span>` : ''}
       </div>
       ${r.body ? `<p class="review-body">${escapeHtml(r.body)}</p>` : ''}
     </article>`;
@@ -193,10 +188,12 @@ function reviewCard(r) {
 function onReviewSubmit(e) {
   e.preventDefault();
   const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
   const score = Number(form.score.value);
-  const body = form.body.value.trim();
+  const body = '';
   const editingId = form.dataset.editingId;
-  submitGuarded(async () => {
+  burst(submitBtn);
+  guardSubmit(submitBtn, () => submitGuarded(async () => {
     if (editingId) {
       await api(`/api/reviews/${editingId}`, { method: 'PUT', body: { score, body } });
       toast('Review updated.');
@@ -204,7 +201,7 @@ function onReviewSubmit(e) {
       await api(`/api/books/${id}/reviews`, { method: 'POST', body: { score, body } });
       toast('Review posted.');
     }
-  });
+  }));
 }
 
 function onReviewAction(e) {
@@ -245,13 +242,15 @@ initHeader();
 
 // Static elements — attach listeners once (they survive re-renders).
 document.getElementById('book-action').addEventListener('click', async (e) => {
-  if (!e.target.closest('[data-action="add-to-cart"]')) return;
+  const btn = e.target.closest('[data-action="add-to-cart"]');
+  if (!btn) return;
   if (!data) return;
   const user = await ensureAuthed();
   if (!user) return;
+  flyToCart(btn);
   try {
     await api('/api/cart', { method: 'POST', body: { bookId: data.book.id, qty: 1 } });
-    toast('Added to cart.');
+    toast(t('book.added'));
     await refreshHeader();
   } catch (err) {
     toast(err.message);

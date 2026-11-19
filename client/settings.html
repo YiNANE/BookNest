@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — BookNest</title>
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">🐦</span> BookNest</a>
+    <nav class="main-nav" aria-label="Primary">
+      <a href="/">Home</a>
+      <a href="/catalogue.html">Browse</a>
+    </nav>
+    <div class="header-actions">
+      <form class="header-search" action="/catalogue.html" method="get" role="search">
+        <input type="search" name="q" placeholder="Search books…" aria-label="Search books">
+        <button type="submit" class="btn btn-light">Search</button>
+      </form>
+      <a class="cart-link" href="/cart.html" aria-label="Cart">🛒</a>
+      <div id="auth-area" class="auth-area"></div>
+    </div>
+  </div>
+</header>
+
+<main class="page-wrap">
+  <h1 data-i18n="settings.title">Settings</h1>
+  <div id="settings-root" aria-live="polite">
+    <section class="settings-card">
+      <h2 data-i18n="settings.theme">Theme</h2>
+      <div class="setting-row">
+        <label data-i18n="settings.colourTheme">Colour theme</label>
+        <div class="theme-swatches" id="theme-swatches"></div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h2 data-i18n="settings.display">Display</h2>
+      <div class="setting-row">
+        <label data-i18n="settings.fontSize">Font size</label>
+        <div class="seg-group" id="font-group">
+          <button type="button" class="seg-btn" data-font="small" data-i18n="settings.small">Small</button>
+          <button type="button" class="seg-btn" data-font="medium" data-i18n="settings.medium">Medium</button>
+          <button type="button" class="seg-btn" data-font="large" data-i18n="settings.large">Large</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h2 data-i18n="settings.language">Language</h2>
+      <div class="setting-row">
+        <label data-i18n="settings.ifaceLang">Interface language</label>
+        <div class="seg-group" id="lang-group">
+          <button type="button" class="seg-btn" data-lang="en">English</button>
+          <button type="button" class="seg-btn" data-lang="zh">中文</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-card">
+      <h2 data-i18n="settings.payment">Payment</h2>
+      <div class="setting-row">
+        <label data-i18n="settings.prefPayment">Preferred payment method</label>
+        <select id="payment-method">
+          <option value="cash" data-i18n="settings.cash">Cash on delivery</option>
+          <option value="campus_card" data-i18n="settings.campusCard">Campus card</option>
+          <option value="card" data-i18n="settings.bankCard">Bank card (simulated)</option>
+        </select>
+      </div>
+      <p class="muted small" data-i18n="settings.paymentNote">Payments are simulated only — no real card or money is used.</p>
+    </section>
+
+    <section class="settings-card">
+      <h2 data-i18n="settings.privacy">Privacy</h2>
+      <div class="setting-row">
+        <label data-i18n="settings.showName">Show my display name on my posts</label>
+        <div class="check-row"><input type="checkbox" id="privacy-name"></div>
+      </div>
+      <div class="setting-row">
+        <label data-i18n="settings.showEmail">Show my email on my account page</label>
+        <div class="check-row"><input type="checkbox" id="privacy-email"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p data-i18n="footer.text">BookNest — COMP3421 final project (solo). Dummy data only; no real payments or personal information.</p>
+</footer>
+
+<script type="module" src="/js/settings.js"></script>
+</body>
+</html>

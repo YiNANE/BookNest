@@ -1,5 +1,6 @@
 import { api, qs } from './api.js';
 import { escapeHtml, initHeader, renderBookGrid } from './ui.js';
+import { t } from './i18n.js';
 
 const state = {
   category: '',
@@ -110,7 +111,7 @@ function bindControls() {
 
 async function load() {
   const grid = document.getElementById('book-grid');
-  grid.innerHTML = '<p class="empty">Loading…</p>';
+  grid.innerHTML = `<p class="empty">${escapeHtml(t('cat.loading'))}</p>`;
   try {
     const data = await api('/api/books' + qs({
       category: state.category,
@@ -122,7 +123,7 @@ async function load() {
       sort: state.sort,
       page: state.page,
     }));
-    renderBookGrid(grid, data.items, 'No books match your filters.');
+    renderBookGrid(grid, data.items, t('empty.catalogue'));
     renderResultCount(data);
     renderPagination(data);
   } catch (err) {
@@ -134,7 +135,7 @@ function renderResultCount(data) {
   const el = document.getElementById('result-count');
   const start = data.total === 0 ? 0 : (data.page - 1) * data.limit + 1;
   const end = Math.min(data.page * data.limit, data.total);
-  el.textContent = `${start}–${end} of ${data.total} books`;
+  el.textContent = `${start}–${end} / ${data.total} ${t('cat.resultOf')}`;
 }
 
 function renderPagination(data) {

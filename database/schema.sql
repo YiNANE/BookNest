@@ -104,3 +104,15 @@ CREATE TABLE IF NOT EXISTS cart_item (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE (user_id, book_id)
 );
+
+-- Per-user preferences (theme, font size, language, payment method, privacy).
+CREATE TABLE IF NOT EXISTS user_settings (
+  user_id            INTEGER PRIMARY KEY REFERENCES user(id) ON DELETE CASCADE,
+  theme              TEXT NOT NULL DEFAULT 'coral',
+  font_size          TEXT NOT NULL DEFAULT 'medium',
+  language           TEXT NOT NULL DEFAULT 'en',
+  payment_method     TEXT NOT NULL DEFAULT 'cash',
+  privacy_show_name  INTEGER NOT NULL DEFAULT 1 CHECK (privacy_show_name IN (0, 1)),
+  privacy_show_email INTEGER NOT NULL DEFAULT 0 CHECK (privacy_show_email IN (0, 1)),
+  updated_at         TEXT NOT NULL DEFAULT (datetime('now'))
+);
