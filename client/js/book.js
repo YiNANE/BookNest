@@ -155,19 +155,51 @@ function renderReviews(reviews) {
     + (reviews.length ? reviews.map(reviewCard).join('') : emptyState(t('empty.reviews')));
 
   el.querySelector('#review-form').addEventListener('submit', onReviewSubmit);
+  setupStarRating(el.querySelector('#star-rating'), mine ? mine.score : 5);
 }
 
 function reviewFormHtml(mine) {
-  const score = mine ? mine.score : 5;
-  const options = [5, 4, 3, 2, 1].map((s) =>
-    `<option value="${s}" ${s === score ? 'selected' : ''}>${s} star${s === 1 ? '' : 's'}</option>`).join('');
+  const score = mine ? Number(mine.score) : 5;
   return `
     <form id="review-form" class="write-form" novalidate data-editing-id="${mine ? mine.id : ''}">
-      <label>${t('book.yourScore')}
-        <select name="score">${options}</select>
-      </label>
+      <div class="star-field">
+        <span class="star-label">${t('book.yourScore')}</span>
+        <div class="star-rating" id="star-rating" role="radiogroup"
+          aria-label="${t('book.yourScore')}" data-value="${score}">
+          ${[1, 2, 3, 4, 5].map((v) => `
+            <button type="button" class="star-btn" data-value="${v}"
+              aria-label="${v} star${v === 1 ? '' : 's'}">
+              <svg class="star-svg" viewBox="0 0 24 24" aria-hidden="true">
+                <path class="star-path"
+                  d="M12 2.6 L14.7 8.5 L21.1 9.1 L16.4 13.5 L17.8 19.8 L12 16.6 L6.2 19.8 L7.6 13.5 L2.9 9.1 L9.3 8.5 Z"/>
+                <circle class="star-spark" cx="8.7" cy="8.3" r="1.4"/>
+              </svg>
+            </button>`).join('')}
+        </div>
+      </div>
       <button type="submit" class="btn btn-primary">${mine ? t('book.updateReview') : t('book.postReview')}</button>
     </form>`;
+}
+
+// Horizontal 5-star rating: click to set, hover to highlight the left stars.
+function setupStarRating(container, initial) {
+  if (!container) return;
+  const stars = Array.from(container.querySelectorAll('.star-btn'));
+  let value = Number(initial) || 5;
+  const paint = (n) => stars.forEach((s) => s.classList.toggle('lit', Number(s.dataset.value) <= n));
+
+  container.dataset.value = String(value);
+  paint(value);
+
+  stars.forEach((s) => {
+    s.addEventListener('mouseenter', () => paint(Number(s.dataset.value)));
+    s.addEventListener('click', () => {
+      value = Number(s.dataset.value);
+      container.dataset.value = String(value);
+      paint(value);
+    });
+  });
+  container.addEventListener('mouseleave', () => paint(value));
 }
 
 function reviewCard(r) {
@@ -189,7 +221,8 @@ function onReviewSubmit(e) {
   e.preventDefault();
   const form = e.target;
   const submitBtn = form.querySelector('button[type="submit"]');
-  const score = Number(form.score.value);
+  const ratingEl = form.querySelector('#star-rating');
+  const score = Number(ratingEl ? ratingEl.dataset.value : 5);
   const body = '';
   const editingId = form.dataset.editingId;
   burst(submitBtn);

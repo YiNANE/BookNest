@@ -146,6 +146,16 @@ const DICT = {
     // shared bits
     'common.browse': 'Browse books',
     'common.loading': 'Loading…',
+
+    // empty states
+    'empty.cart': 'No favourite books in your cart yet — go browse!',
+    'empty.catalogue': 'No books match your filters.',
+    'empty.recs': 'No recommendations yet — be the first to explain why this book is worth it.',
+    'empty.reviews': 'No scored reviews yet.',
+    'empty.orders': 'No orders yet.',
+    'empty.category': 'No books in this subject yet.',
+    'empty.generic': 'Nothing here yet.',
+    'btn.browse': 'Browse books',
   },
 
   zh: {
@@ -282,6 +292,15 @@ const DICT = {
 
     'common.browse': '浏览书籍',
     'common.loading': '加载中…',
+
+    'empty.cart': '购物车还是空的——快去找本心仪的书吧！',
+    'empty.catalogue': '没有找到符合筛选的书籍。',
+    'empty.recs': '还没有推荐帖——来做第一个写出推荐理由的人吧。',
+    'empty.reviews': '还没有评分短评。',
+    'empty.orders': '还没有订单。',
+    'empty.category': '这个科目暂时还没有书。',
+    'empty.generic': '暂时还没有内容。',
+    'btn.browse': '去浏览',
   },
 };
 

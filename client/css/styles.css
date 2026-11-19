@@ -1243,3 +1243,33 @@ html::before {
 .picks-head h2 { color: #fff; }
 .picks-head .section-link { color: #fff; }
 
+/* --- horizontal 5-star rating input (rounded sparkle stars) --- */
+.star-field { display: flex; flex-direction: column; gap: 0.4rem; }
+.star-label { font-size: 0.9rem; font-weight: 700; color: var(--ink-soft); }
+.star-rating { display: flex; gap: 8px; align-items: center; }
+.star-btn {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  transition: transform 0.12s ease;
+}
+.star-svg { width: 34px; height: 34px; display: block; overflow: visible; }
+.star-path {
+  fill: transparent;
+  stroke: #C9A96A;
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+  transition: fill 0.12s ease, stroke 0.12s ease;
+}
+.star-spark { fill: #FFFFFF; opacity: 0; transition: opacity 0.12s ease; }
+.star-btn.lit .star-path { fill: #D8BB82; stroke: #C6A96C; }
+.star-btn.lit .star-spark { opacity: 0.85; }
+.star-btn.lit .star-svg { filter: drop-shadow(0 0 3px rgba(216, 187, 130, 0.55)); }
+.star-btn:hover { transform: scale(1.12); }
+@media (prefers-reduced-motion: reduce) {
+  .star-btn, .star-path, .star-spark { transition: none; }
+}
+
