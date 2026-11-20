@@ -7,7 +7,7 @@
 | Author | Fang Yinan (24101605D) |
 | Group type | Solo project |
 | Coding route | Vibe coding (declared — see `ai-use.md`) |
-| Deployment | Render Web Service + 1 GB persistent disk |
+| Deployment | Railway — https://booknest-production-f8016fa7.up.railway.app |
 | Date | Semester 1, 2026/27 |
 
 ---
@@ -75,6 +75,28 @@ distinct, which is the product's central differentiator.
 8. **Admin** — catalogue CRUD with validated cover upload, order status
    updates, listing deactivation.
 
+### UI & interaction refinements (implemented after the MVP)
+
+- **Ranking "Today's picks" stage** — the landing page shows four picks on
+  rounded, pale-gold podium steps numbered 1–4, on a theme-tinted stage with
+  drifting party-popper confetti; the books rest on the steps and float only on
+  hover (the podium stays fixed).
+- **Bilingual UI (English / 中文)** — a language setting switches the whole
+  interface (header, forms, empty states, settings, auth dialog) via a small
+  i18n module; the choice is stored per user and mirrored to `localStorage`.
+- **Settings & account pages** — theme (5 palettes that also tint the page
+  background), font size, language, payment method and privacy toggles; an
+  account page with profile, member-since and order count.
+- **Vector 5-star rating** — five rounded five-pointed stars; the first N are
+  solid warm gold with a sparkle highlight and a soft glow, the rest are hollow
+  outlines; click to set, hover highlights the stars to the left.
+- **Micro-interactions** — a book flies into the cart on "add to cart" (and the
+  cart icon bounces), a celebration burst fires behind the publish button, the
+  page background drifts slowly, and a custom draggable scrollbar plus a left
+  subject rail aid navigation.
+- **Empty & offline states** — a curious-bird illustration for empty lists and a
+  "slumped" bird for the network-error overlay.
+
 ### Stretch (not started — by design)
 
 Student-to-student used-book listings, spending/reading charts, a report-and-
@@ -99,10 +121,11 @@ every MVP feature was green.
 - `server/db.js` — opens SQLite, applies schema, pragmas (foreign keys, WAL).
 - `server/seed.js` — idempotent seed: categories/books, bcrypt-hashed demo
   accounts, and placeholder digital files outside the static root.
-- `server/routes/*` — catalogue, auth, content, cart, download, admin.
+- `server/routes/*` — catalogue, auth, content, cart, download, admin, settings.
 - `server/middleware/auth.js` — `requireLogin`, `requireAdmin`, current user.
-- `client/*` — pages (home, catalogue, book, cart, orders, admin) + shared
-  `js/ui.js`, `js/api.js`, `js/auth.js` and `css/styles.css`.
+- `client/*` — pages (home, catalogue, book, cart, orders, account, settings,
+  offline, admin) + shared `js/ui.js`, `js/api.js`, `js/auth.js`, `js/i18n.js`
+  and `css/styles.css`.
 
 The client and API share an origin; the server serves the static client and
 `/uploads` (covers). Digital material files live **outside** the static root
@@ -121,7 +144,8 @@ Category ──1:N── Book ──1:N── Recommendation ──N:M── Vot
 ```
 
 Tables: `user`, `category`, `book`, `recommendation`, `review`, `vote`,
-`order`, `order_item`, `cart_item`. Key constraints:
+`order`, `order_item`, `cart_item`, `user_settings` (per-user preferences).
+Key constraints:
 
 - `review(user_id, book_id)` is **UNIQUE** — one review per member per book.
 - `vote(user_id, recommendation_id)` is a composite **PRIMARY KEY** — one vote
@@ -136,13 +160,14 @@ Tables: `user`, `category`, `book`, `recommendation`, `review`, `vote`,
 | GET | `/api/health` | — | liveness |
 | GET | `/api/categories` | — | categories + counts |
 | GET | `/api/catalogue/meta` | — | price bounds for filters |
-| GET | `/api/home` | — | today's picks |
+| GET | `/api/home` | — | today's picks (4) + per-subject sections |
 | GET | `/api/books` | — | search/filter/sort/paginate |
 | GET | `/api/books/:id` | — | detail + recommendations + reviews + `owned` |
 | POST | `/api/auth/register` | — | create account (bcrypt) |
 | POST | `/api/auth/login` | — | start session |
 | POST | `/api/auth/logout` | member | end session |
 | GET | `/api/me` | — | current user or `null` |
+| GET / PUT | `/api/me/settings` | member | theme, font, language, payment, privacy |
 | POST | `/api/books/:id/recommendations` | member | post a recommendation |
 | PUT / DELETE | `/api/recommendations/:id` | owner | edit / delete own post |
 | POST / DELETE | `/api/recommendations/:id/vote` | member | mark / unmark useful |
@@ -211,18 +236,78 @@ appears in the HTML.
 
 ## 7. UI / UX
 
+- **Visual language**: a warm editorial bookstore look — cream/paper
+  background, serif headlines, coral accents, rounded cards and pill tags —
+  with a slow drifting background and party-popper confetti on the ranking
+  stage.
 - **Guest-first**: the landing page is a working storefront before login.
+- **Ranking "Today's picks"**: four books on numbered (1–4) rounded pale-gold
+  podium steps; the books rest on the steps and float only on hover, while the
+  podium stays fixed. The stage tint follows the active theme.
 - **Reason first**: recommendations are visually distinct (left-accent card with
-  the quoted reason and a "👍 N found useful" pill); reviews show a star row.
-- **Inline auth**: a modal `<dialog>` with Sign-in / Register tabs, no page
-  navigation.
+  the quoted reason and a "👍 N found useful" pill); reviews show a vector
+  five-star row.
+- **Inline auth**: a modal `<dialog>` with Sign-in / Register tabs, a
+  show-password eye and a close button; no page navigation.
+- **Bilingual**: every page switches between English and 中文 from Settings.
+- **Feedback & states**: buttons disable while a request is in flight (no double
+  submit); a book flies into the cart on add; a celebration burst fires on
+  publish; empty lists show a curious-bird illustration; a lost connection shows
+  a full-screen overlay with the slumped bird.
 - **Responsive**: single-column at 360 px; the catalogue becomes a two-column
   filter+results layout and the book grid grows to four columns at ≥ 900 px.
 - **Accessibility**: semantic landmarks, labels and alt text, `aria-live` on
   dynamic regions, visible `:focus-visible` outlines.
 
-*(Insert screenshots here for the final PDF: home, catalogue, book detail,
-inline sign-in, cart, orders, admin — at 360 px and desktop widths.)*
+### Screenshot checklist (for the final PDF)
+
+Two sets are enough to prove responsive behaviour.
+
+**A. Desktop shots** (normal window, ~1280–1440 px) — 6 pages:
+
+| # | Page | What to capture |
+|---|---|---|
+| 1 | Home (`/`) | Hero + "Today's picks" ranking podium + confetti |
+| 2 | Catalogue (`/catalogue.html`) | Filters, sort, grid, pagination |
+| 3 | Book detail (`/book.html?id=1`) | Cover, info, reason-first recommendations |
+| 4 | Cart (`/cart.html`) | Items, subtotal, delivery-address field |
+| 5 | Orders (`/orders.html`) | Order cards + status |
+| 6 | Admin (`/admin.html`) | Book form + catalogue table + order status |
+
+**B. 360 px shots** (Chrome DevTools → `Ctrl+Shift+M`, width 360) — 5 pages:
+
+| # | Page | Why |
+|---|---|---|
+| 7 | Home | Podium + subject rail on mobile |
+| 8 | Catalogue | Filters stack / results on mobile |
+| 9 | Book detail | Cover + recommendations on mobile |
+| 10 | Cart | Items + checkout on mobile |
+| 11 | Orders | Order cards on mobile |
+
+> Optional extras for the appendix: inline sign-in dialog, settings page, a
+> theme switch, and the offline overlay.
+
+### Captured screenshots
+
+**Desktop** (≈1920 px):
+
+![Home — desktop](screenshots/shot-01.png)
+![Catalogue — desktop](screenshots/shot-02.png)
+![Book detail — desktop](screenshots/shot-03.png)
+![Cart — desktop](screenshots/shot-04.png)
+![Orders — desktop](screenshots/shot-05.png)
+![Admin — desktop](screenshots/shot-06.png)
+
+**360 px** (device-mode captures — the page renders narrow and centred):
+
+![Home — 360 px](screenshots/shot-07.png)
+![Catalogue — 360 px](screenshots/shot-08.png)
+![Book detail — 360 px](screenshots/shot-09.png)
+![Cart — 360 px](screenshots/shot-10.png)
+![Orders — 360 px](screenshots/shot-11.png)
+
+> Order follows the capture sequence: desktop home → admin, then 360 px home →
+> orders.
 
 ## 8. Testing
 
@@ -272,7 +357,7 @@ and the deployment.
 - express-session — https://github.com/expressjs/session (MIT)
 - supertest — https://github.com/ladjs/supertest (MIT)
 - Node.js `node:test` — https://nodejs.org/api/test.html
-- Render — https://render.com
+- Railway — https://railway.app
 
 ## 13. Appendix
 
